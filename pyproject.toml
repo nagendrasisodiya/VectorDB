@@ -1,0 +1,18 @@
+[project]
+name = "vectordb"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "nagendrasisodiya",email = "3n3singh@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.12,<3.14"
+dependencies = [
+    "sentence-transformers (==4.1.0)",
+    "chromadb (>=1.4.0,<2.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
