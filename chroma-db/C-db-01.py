@@ -1,5 +1,4 @@
 import chromadb
-from chromadb.types import Collection
 from chromadb.utils import embedding_functions
 
 embedding_fun=embedding_functions.SentenceTransformerEmbeddingFunction(
@@ -16,7 +15,7 @@ collection=client.create_collection(
 )
 print(f"Collection created: {collection.name}")
 
-# adding documnets in collection
+# adding documents in a collection
 
 collection.add(
     documents=[
