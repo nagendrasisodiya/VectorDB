@@ -1,6 +1,5 @@
 import chromadb
 from chromadb.utils import embedding_functions
-from numpy.ma.core import ids
 
 embedding_fun=embedding_functions.SentenceTransformerEmbeddingFunction(
     model_name="all-MiniLM-L6-v2"
