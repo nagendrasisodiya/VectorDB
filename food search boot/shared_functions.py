@@ -31,7 +31,6 @@ def load_food_data(file_path:str)->List[Dict]:
            if 'food_calories_per_serving' not in item:
                item['food_calories_per_serving'] = 0
         return food_data
-        pass
     except Exception as error:
         print(f"exception in loading food data: {error}")
         return[]
