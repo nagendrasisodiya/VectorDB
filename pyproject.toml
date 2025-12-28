@@ -9,7 +9,10 @@ readme = "README.md"
 requires-python = ">=3.12,<3.14"
 dependencies = [
     "sentence-transformers (==4.1.0)",
-    "chromadb (>=1.4.0,<2.0.0)"
+    "chromadb (>=1.4.0,<2.0.0)",
+    "numpy (>=2.4.0,<3.0.0)",
+    "scipy (>=1.16.3,<2.0.0)",
+    "ibm-watsonx-ai (>=1.4.11,<2.0.0)"
 ]
 
 
