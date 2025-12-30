@@ -24,7 +24,8 @@ dependencies = [
     "llama-index-embeddings-huggingface (>=0.6.1,<0.7.0)",
     "llama-index-llms-ibm (>=0.6.1,<0.7.0)",
     "llama-index-retrievers-bm25 (>=0.6.5,<0.7.0)",
-    "rank-bm25 (>=0.2.2,<0.3.0)"
+    "rank-bm25 (>=0.2.2,<0.3.0)",
+    "stemmer (>=0.0.4,<0.0.5)"
 ]
 
 

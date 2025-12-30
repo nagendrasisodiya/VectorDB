@@ -1,0 +1,57 @@
+BM25 Retriever - Advanced Keyword-Based Search
+
+BM25 is a keyword-based retrieval method that improves on TF-IDF by addressing some of its key limitations.
+It's widely used in production search systems including Elasticsearch and Apache Lucene.
+
+Understanding TF-IDF: The Foundation
+Before diving into BM25, let's understand TF-IDF (Term Frequency-Inverse Document Frequency), which BM25 builds upon:
+
+Term Frequency (TF): Measures how often a word appears in a document
+
+Example: If "neural" appears 3 times in a 100-word document, TF = 3/100 = 0.03
+Inverse Document Frequency (IDF): Measures how rare a word is across all documents
+
+Example: If "neural" appears in only 2 out of 1000 documents, IDF = log(1000/2) = 6.21
+Common words like "the" have low IDF; rare technical terms have high IDF
+TF-IDF Score: TF × IDF
+
+Highlights words that are frequent in one document but rare across the collection
+Developed by Karen Spärck Jones, who pioneered the concept of term specificity
+How BM25 Improves Upon TF-IDF
+
+Key BM25 Improvements:
+
+Term Frequency Saturation: BM25 reduces the impact of repeated terms using term frequency saturation
+Problem: In TF-IDF, if a word appears 100 times vs 10 times, the score increases linearly
+Solution: BM25 uses a saturation function that plateaus after a certain frequency
+
+Document Length Normalization: BM25 adjusts for document length, making it more effective for keyword-based search
+Problem: In TF-IDF, longer documents have unfair advantages
+Solution: BM25 normalizes scores based on document length relative to average
+
+Tunable Parameters: Allows fine-tuning for different types of content
+k1 ≈ 1.2: Controls term frequency saturation (how quickly scores plateau)
+b ≈ 0.75: Controls document length normalization (0=none, 1=full)
+
+When to Use BM25
+Ideal for:
+Technical documentation where exact terms matter
+Legal documents with specific terminology
+Product catalogs with precise specifications
+Academic papers with specialized vocabulary
+Applications requiring keyword-based retrieval rather than semantic similarity
+
+Advantages:
+Excellent precision for exact term matches
+Fast computational performance
+Proven effectiveness in production systems
+No training required (unlike neural approaches)
+Interpretable scoring mechanism
+
+Limitations:
+No semantic understanding (doesn't handle synonyms)
+Struggles with typos and variations
+Limited context understanding
+Requires careful parameter tuning for optimal performance
+
+

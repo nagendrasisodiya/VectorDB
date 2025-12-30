@@ -1,0 +1,31 @@
+Vector Index Retriever - The Foundation
+The Vector Index Retriever uses vector embeddings to find semantically related content,
+making it ideal for general-purpose search and widely used in retrieval-augmented generation (RAG) pipelines.
+
+How it works:
+
+Documents are split into nodes and embedded using the configured embedding model
+Query is converted to an embedding vector
+Returns nodes ranked by cosine similarity to the query embedding
+Generates embeddings in batches of 2048 nodes by default
+
+When to use:
+General-purpose semantic search (most common use case)
+Finding conceptually related content based on meaning rather than exact keywords
+RAG pipelines where semantic understanding is crucial
+When exact keyword matching isn't the primary requirement
+
+Key characteristics from authoritative source:
+Stores embeddings for each document chunk (VectorStoreIndex foundation)
+Best for semantic retrieval based on meaning and context
+Commonly used in LLM pipelines for retrieval-augmented generation
+
+Strengths:
+Excellent semantic understanding and context awareness
+Handles synonyms and related concepts effectively
+Works well with natural language queries
+
+Limitations:
+May miss exact keyword matches when specific terms are crucial
+Requires a good embedding model for optimal performance
+Can be computationally intensive for large document collections

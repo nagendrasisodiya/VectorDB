@@ -1,0 +1,37 @@
+What are Advanced Retrievers?
+Advanced retrievers in LlamaIndex are sophisticated components that go beyond simple vector similarity search to provide more nuanced, context-aware, and intelligent information retrieval.They combine multiple techniques such as:
+
+Semantic Understanding: Using embeddings to understand meaning and context
+Keyword Matching: Precise term-based search for exact specifications
+Hierarchical Context: Maintaining relationships between different levels of information
+Multi-Query Processing: Generating and combining results from multiple query variations
+Fusion Techniques: Intelligently combining results from different retrieval methods
+Why are Advanced Retrievers Important?
+Improved Accuracy: Advanced retrievers can find more relevant information by using multiple search strategies
+Better Context Preservation: They maintain important relationships between pieces of information
+Reduced Hallucination: More precise retrieval leads to more accurate AI responses
+Scalability: Efficient retrieval strategies work better with large document collections
+Flexibility: Different retrieval methods can be combined for optimal results
+
+
+
+Index Types Overview
+Before exploring advanced retrievers, it's helpful to first understand the three main index types supported by LlamaIndex.
+Each is designed to support different retrieval scenarios:
+
+VectorStoreIndex:
+
+Stores vector embeddings for each document chunk
+Best suited for semantic retrieval based on meaning
+Commonly used in LLM pipelines and RAG applications
+
+DocumentSummaryIndex:
+Generates and stores summaries of documents at indexing time
+Uses summaries to filter documents before retrieving full content
+Especially useful for large and diverse document sets that cannot fit in the context window of an LLM
+
+KeywordTableIndex:
+Extracts keywords from documents and maps them to specific content chunks
+Enables exact keyword matching for rule-based or hybrid search scenarios
+Ideal for applications requiring precise term matching
+

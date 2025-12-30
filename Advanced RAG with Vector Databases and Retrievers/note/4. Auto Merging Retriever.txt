@@ -1,0 +1,39 @@
+Auto Merging Retriever - Hierarchical Context Preservation
+
+Auto Merging Retriever is designed to preserve context in long documents using a hierarchical structure. **It uses hierarchical chunking to break documents into parent and child nodes, and if enough child nodes from the same parent are retrieved, the retriever returns the parent node instead.**
+
+**How it works (from authoritative source)**:
+- **Uses hierarchical chunking** to break documents into parent and child nodes
+- **Retrieves parent if enough children match** - intelligent merging logic
+- **Preserves context in long documents** by consolidating related content
+- **Dual Storage**: Smaller child chunks are indexed in the vector store for precise matching, while larger parent chunks are stored in the docstore
+
+**Key behavior pattern**:
+- Child chunks enable precise matching for specific queries
+- When multiple child chunks from the same parent are retrieved, the system returns the parent chunk
+- This **helps consolidate related content and preserve broader context**
+
+**When to use (based on authoritative guidance):**
+- Long documents where small chunks lose important surrounding context
+- Legal documents, research papers, technical specifications that need context preservation
+- When you need both precise matching and comprehensive context
+- Documents with natural hierarchical structure (sections, subsections)
+
+**Configuration:**
+- `chunk_sizes`: List of chunk sizes from largest to smallest (e.g., [512, 256, 128])
+- `chunk_overlap`: Overlap between chunks to maintain continuity
+- Storage context manages both vector store (child nodes) and docstore (parent nodes)
+
+**Strengths**:
+- Automatically preserves context without manual intervention
+- Reduces information fragmentation in long documents
+- Intelligent merging based on retrieval patterns
+- Maintains granular search capability while providing broader context
+
+**Limitations**:
+- More complex setup compared to basic retrievers
+- Requires hierarchical document structure to be effective
+- Higher storage overhead due to multiple chunk levels
+- May not be suitable for very short documents
+
+Based on: https://docs.llamaindex.ai/en/stable/examples/retrievers/auto_merging_retriever

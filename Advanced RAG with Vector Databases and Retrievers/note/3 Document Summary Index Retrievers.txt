@@ -1,0 +1,44 @@
+Document Summary Index Retrievers
+
+Document Summary Index Retrievers use document summaries instead of the actual documents to find relevant content, making them efficient for large collections.
+They return the original documents, not their summaries.
+
+How it works (from authoritative source):
+Generates and stores summaries of documents at indexing time
+Uses summaries to filter documents before retrieving full content
+Two-stage Process: First uses summaries to filter documents, then returns full document content
+Especially useful for large, diverse corpora that cannot fit in the context window of an LLM
+Two Retrieval Options:
+
+DocumentSummaryIndexLLMRetriever:
+Uses a large language model to analyze the query against document summaries
+Provides intelligent document selection but can be more time-consuming and expensive
+Best for complex queries requiring nuanced understanding
+
+DocumentSummaryIndexEmbeddingRetriever:
+Uses semantic similarity between the query and summary embeddings
+Faster and more cost-effective than LLM-based approach
+Good for straightforward similarity matching
+
+When to use (based on authoritative guidance):
+Large document collections where documents cover different topics
+When you need efficient document-level filtering before detailed retrieval
+Multi-document QA where documents have distinct subject matters
+Large and diverse document sets that cannot fit in the context window of an LLM
+
+Configuration Parameters:
+choice_top_k (LLM retriever): Number of documents to select
+similarity_top_k (Embedding retriever): Number of documents to select
+Default is 1, increase for multiple document retrieval
+
+Key Point: Returns original documents, not their summaries - the summaries are only used for filtering
+
+Strengths:
+Efficient document selection and reduces search space
+Good for heterogeneous collections with diverse topics
+Returns original documents with full context intact
+
+Limitations:
+Requires LLM for summary generation during indexing
+May lose some detail present in original documents during summary creation
+LLM-based version can be slower and more expensive than other options
