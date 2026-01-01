@@ -8,6 +8,8 @@ import Stemmer
 import numpy as np
 from dotenv import load_dotenv
 from huggingface_hub.hf_api import api
+from llama_index.core.base.embeddings.base import similarity
+from llama_index.core.storage.docstore import SimpleDocumentStore
 
 warnings.filterwarnings('ignore')
 
@@ -18,7 +20,7 @@ from llama_index.core import (
     Document,
     Settings,
     DocumentSummaryIndex,
-    KeywordTableIndex
+    KeywordTableIndex, StorageContext
 )
 from llama_index.core.retrievers import (
     BaseRetriever,
@@ -159,7 +161,7 @@ for i, node in enumerate(nodes, 1):
 
 # BM25 RETRIEVER
 print("=" * 60)
-print("2. BM25 RETRIEVER")
+print("BM25 RETRIEVER")
 print("=" * 60)
 
 try:
@@ -214,9 +216,11 @@ except ImportError:
             print(f"   → BM25 would boost this result for terms: {found_terms}")
         print()
 
+
+
 # DOCUMENT SUMMARY INDEX RETRIEVERS
 print("=" * 60)
-print("3. DOCUMENT SUMMARY INDEX RETRIEVERS")
+print("DOCUMENT SUMMARY INDEX RETRIEVERS")
 print("=" * 60)
 
 # LLM-based document summary retriever
@@ -261,8 +265,239 @@ except Exception as e:
 
 
 
+
 # AUTO MERGING RETRIEVER
 print("=" * 60)
-print("4. AUTO MERGING RETRIEVER")
+print("AUTO MERGING RETRIEVER")
 print("=" * 60)
 
+# Create hierarchical nodes
+node_parser=HierarchicalNodeParser.from_defaults(
+    chunk_sizes=[512, 256, 128] #chunk_sizes: List of chunk sizes from largest to smallest
+)
+hier_nodes=node_parser.get_nodes_from_documents(init_setup.documents)
+
+#Createing a storage context with all nodes
+doc_store=SimpleDocumentStore()
+doc_store.add_documents(hier_nodes)
+
+storage_context=StorageContext.from_defaults(docstore=doc_store)
+
+# creating base index
+base_index=VectorStoreIndex(hier_nodes, storage_context=storage_context)
+base_retriever=base_index.as_retriever(similarity_top_k=6)
+
+# creating automerging retriever
+auto_merging_retriever=AutoMergingRetriever(
+    base_retriever,
+    storage_context,
+    verbose=True
+)
+query = DEMO_QUERIES["advanced"]  # "How do neural networks work in deep learning?"
+nodes = auto_merging_retriever.retrieve(query)
+
+print(f"Query: {query}")
+print(f"Auto-merged to {len(nodes)} nodes")
+for i, node in enumerate(nodes[:3], 1):
+    print(f"{i}. Score: {node.score:.4f}" if hasattr(node, 'score') and node.score else f"{i}. (Auto-merged)")
+    print(f"   Text: {node.text[:120]}...")
+    print()
+
+
+
+
+# Recursive Retriever
+
+print("=" * 60)
+print("RECURSIVE RETRIEVER")
+print("=" * 60)
+
+# Creating documents with references
+docs_with_refs=[]
+for i, doc in enumerate(init_setup.documents):
+    ref_doc=Document(
+        text=doc.text,
+        metadata={
+            "doc_id": f"doc_{i}",
+            "references": [f"doc_{j}" for j in range(len(init_setup.documents)) if j != i][:2]
+        }
+    )
+    docs_with_refs.append(ref_doc)
+
+# creating an index with reference doc
+ref_index=VectorStoreIndex.from_documents(docs_with_refs)
+
+# creating retriever mapping
+retriever_dict = {
+    f"doc_{i}": ref_index.as_retriever(similarity_top_k=1)
+    for i in range(len(docs_with_refs))
+}
+
+# creating base retriever
+base_retriever=ref_index.as_retriever(similarity_top_k=2)
+
+# Add the root retriever to the dictionary
+retriever_dict["vector"] = base_retriever
+
+# Recursive retriever
+recursive_retriever = RecursiveRetriever(
+    "vector",
+    retriever_dict=retriever_dict,
+    query_engine_dict={},
+    verbose=True
+)
+
+query = DEMO_QUERIES["applications"]  # "What are the applications of AI?"
+try:
+    nodes = recursive_retriever.retrieve(query)
+    print(f"Query: {query}")
+    print(f"Recursively retrieved {len(nodes)} nodes")
+    for i, node in enumerate(nodes[:3], 1):
+        print(f"{i}. Score: {node.score:.4f}" if hasattr(node, 'score') and node.score else f"{i}. (Recursive)")
+        print(f"   Text: {node.text[:100]}...")
+        print()
+except Exception as e:
+    print(f"Query: {query}")
+    print(f"Recursive retriever demo: {str(e)}")
+    print("Note: Recursive retriever requires specific node reference setup")
+
+    # Fallback to basic retrieval for demonstration
+    print("\nFalling back to basic retrieval demonstration...")
+    base_nodes = base_retriever.retrieve(query)
+    for i, node in enumerate(base_nodes[:2], 1):
+        print(f"{i}. Score: {node.score:.4f}")
+        print(f"   Text: {node.text[:100]}...")
+        print()
+
+
+
+
+# QUERY FUSION RETRIEVER
+print("=" * 60)
+print("QUERY FUSION RETRIEVER - OVERVIEW")
+print("=" * 60)
+
+base_retriever=init_setup.vector_index.as_retriever(similarity_top_k=3)
+
+query = DEMO_QUERIES["comprehensive"]  # "What are the main approaches to machine learning?"
+print(f"Query: {query}")
+
+# QueryFusionRetriever generates multiple query variations and fuses results
+# using one of three sophisticated fusion modes.
+
+# Overview of Fusion Modes:
+# 1. RECIPROCAL_RERANK: Uses reciprocal rank fusion (most robust)
+# 2. RELATIVE_SCORE: Preserves score magnitudes (most interpretable)
+# 3. DIST_BASED_SCORE: Statistical normalization (most sophisticated)
+
+# Demonstrating workflow:
+# Each subsection below explores one fusion mode in detail with
+# Theoretical explanation of the fusion method
+# Live demonstration using QueryFusionRetriever
+# Manual implementation showing the underlying mathematics
+# Use case recommendations and trade-offs
+
+# Reciprocal Rank Fusion(RRF) Mode
+
+print("=" * 60)
+print("RECIPROCAL RANK FUSION MODE DEMONSTRATION")
+print("=" * 60)
+
+base_retriever=init_setup.vector_index.as_retriever(similarity_top_k=5)
+
+print("Testing QueryFusionRetriever with reciprocal_rerank mode:")
+print("This demonstrates how RRF works within the query fusion framework")
+
+query = DEMO_QUERIES["comprehensive"]  # "What are the main approaches to machine learning?"
+try:
+    rrf_query_fusion=QueryFusionRetriever(
+        [base_retriever],
+        similarity_top_k=3,
+        num_queries=3,
+        mode="reciprocal_rerank",
+        use_async=False,
+        verbose=True
+    )
+
+    print(f"\nQuery: {query}")
+    print("QueryFusionRetriever will:")
+    print("1. Generate query variations using LLM")
+    print("2. Retrieve results for each variation")
+    print("3. Apply Reciprocal Rank Fusion")
+
+    nodes = rrf_query_fusion.retrieve(query)
+    print(f"\nRRF Query Fusion Results:")
+    for i, node in enumerate(nodes, 1):
+        print(f"{i}. Final RRF Score: {node.score:.4f}")
+        print(f"   Text: {node.text[:100]}...")
+        print()
+except Exception as error:
+    print(f"QueryFusionRetriever error: {error}")
+
+
+
+# RELATIVE SCORE FUSION MODE
+print("=" * 60)
+print("RELATIVE SCORE FUSION MODE DEMONSTRATION")
+print("=" * 60)
+
+base_retriever = init_setup.vector_index.as_retriever(similarity_top_k=5)
+
+print("Testing QueryFusionRetriever with relative_score mode:")
+print("This mode preserves score magnitudes while normalizing across query variations")
+
+query = DEMO_QUERIES["comprehensive"]  # "What are the main approaches to machine learning?"
+
+try:
+    rel_score_fusion = QueryFusionRetriever(
+        [base_retriever],
+        similarity_top_k=3,
+        num_queries=3,
+        mode="relative_score",
+        use_async=False,
+        verbose=False
+    )
+
+    print(f"\nQuery: {query}")
+    nodes = rel_score_fusion.retrieve(query)
+
+    print(f"\nRelative Score Fusion Results:")
+    for i, node in enumerate(nodes, 1):
+        print(f"{i}. Combined Relative Score: {node.score:.4f}")
+        print(f"   Text: {node.text[:100]}...")
+        print()
+except Exception as error:
+    print(f"QueryFusionRetriever error: {error}")
+
+# DISTRIBUTION-BASED SCORE FUSION MODE DEMONSTRATION
+print("=" * 60)
+print("DISTRIBUTION-BASED SCORE FUSION MODE DEMONSTRATION")
+print("=" * 60)
+
+base_retriever = init_setup.vector_index.as_retriever(similarity_top_k=8)
+
+print("Testing QueryFusionRetriever with dist_based_score mode:")
+print("This mode uses statistical analysis for the most sophisticated score fusion")
+
+query = DEMO_QUERIES["comprehensive"]  # "What are the main approaches to machine learning?"
+
+try:
+    dist_fusion=QueryFusionRetriever(
+        [base_retriever],
+        similarity_top_k=3,
+        num_queries=3,
+        mode="dist_based_score",
+        use_async=False,
+        verbose=False
+    )
+
+    print(f"\nQuery: {query}")
+    nodes=dist_fusion.retrieve(query)
+    print(f"\nDistribution-Based Fusion Results:")
+    for i, node in enumerate(nodes, 1):
+        print(f"{i}. Statistically Normalized Score: {node.score:.4f}")
+        print(f"   Text: {node.text[:100]}...")
+        print()
+
+except Exception as error:
+    print(f"QueryFusionRetriever error: {error}")

@@ -1,0 +1,47 @@
+Query Fusion Retriever - Multi-Query Enhancement with Advanced Fusion
+The Query Fusion Retriever combines results from different retrievers (such as vector-based and keyword-based methods) and optionally generates multiple variations of a query using an LLM to improve coverage.
+The results are merged using fusion strategies to improve recall.
+
+
+How it works (from authoritative source):
+Combines results from multiple retrievers - e.g., vector-based and keyword-based methods
+Supports multiple query variations - generates different formulations of the same query
+Uses fusion strategies to improve recall - sophisticated merging techniques
+Improved Coverage: Reduces impact of query formulation on final results
+
+Core capabilities:
+Multiple Retriever Support: Combines results from different retrievers
+Query Variation Generation: Optionally generates multiple variations of a query using an LLM
+Fusion Strategies: Merges results using sophisticated fusion techniques
+
+Fusion Strategies Supported (from authoritative source):
+Reciprocal Rank Fusion (RRF): Combines rankings across queries - robust and doesn't rely on score magnitudes
+Relative Score Fusion: Normalizes scores within each result set - preserves the relative confidence of each retriever
+Distribution-Based Fusion: Uses statistical normalization - ideal for handling score variability
+
+When to use (based on authoritative guidance):
+General Q&A where you want to combine semantic relevance with keyword matching
+Complex or ambiguous queries that may benefit from multiple formulations
+When query phrasing significantly impacts results
+Research and exploratory search scenarios
+When users provide under-specified or unclear queries
+
+Configuration:
+num_queries: Number of query variations to generate (default: 4)
+mode: Fusion strategy ("reciprocal_rerank", "relative_score", "dist_based_score")
+similarity_top_k: Number of results to retrieve per query
+use_async: Enable async processing for better performance
+
+Key benefit: Uses fusion strategies such as reciprocal rank fusion or relative score fusion to intelligently combine results
+
+Strengths:
+Improved recall through multiple query formulations
+Handles query variations effectively
+Reduces query sensitivity
+Combines strengths of different retrieval methods
+
+Limitations:
+Higher computational cost due to multiple retrievers/queries
+Requires LLM for query generation (additional cost)
+May introduce noise if fusion strategies are not well-tuned
+More complex setup and configuration

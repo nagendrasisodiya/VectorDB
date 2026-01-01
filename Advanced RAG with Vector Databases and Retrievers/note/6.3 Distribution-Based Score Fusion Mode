@@ -1,0 +1,55 @@
+Distribution-Based Score Fusion Mode
+Distribution-Based Score Fusion uses statistical properties of score distributions from each query variation to normalize and combine retrieval results,
+providing the most sophisticated handling of score variability and reliability across different query formulations.
+
+How it works within QueryFusionRetriever:
+Generates multiple query variations using LLM
+Analyzes the statistical distribution of scores from each query variation
+Normalizes scores using distribution parameters (mean, standard deviation, percentiles)
+Applies statistical transformations like z-score normalization or percentile ranking
+Combines normalized scores with confidence weighting based on distribution characteristics
+
+Statistical approaches used:
+
+Z-score normalization: Centers scores around mean with unit variance
+Formula: z_score = (score - mean) / std_dev
+Converts to [0,1] range using sigmoid: 1 / (1 + exp(-z_score))
+
+Percentile ranking: Converts scores to percentile positions
+Formula: percentile = rank(score) / total_results
+
+Distribution-aware normalization: Considers score distribution shape
+Uses IQR (Interquartile Range) to adjust for distribution spread
+Handles multi-modal distributions from different query variations
+
+
+Why Distribution-Based Fusion excels for query variations:
+Statistical robustness: Accounts for how scores are distributed within each query variation
+Adaptive weighting: Can weight query variations based on their score distribution confidence
+Outlier handling: Statistical methods naturally handle extreme scores
+Multi-modal support: Each query variation may have different score distribution characteristics
+
+When to use Distribution-Based mode:
+When query variations produce very different score distributions
+For complex queries where some variations are much more reliable than others
+When you need statistically principled score combination
+In scenarios with noisy or unreliable retrieval scoring
+
+Advanced features in QueryFusionRetriever context:
+Automatic distribution analysis for each query variation
+Confidence-based weighting of query variations
+Robust handling of varying result set sizes
+Statistical outlier detection within query results
+
+Advantages:
+Most statistically principled approach to query fusion
+Handles complex score distributions effectively
+Adapts to different query variation characteristics
+Robust to various types of score variability and noise
+
+Limitations:
+Most computationally intensive fusion method
+Requires sufficient results for reliable distribution estimation
+May over-normalize in some simple scenarios
+More complex to interpret than simpler fusion methods
+Based on: https://docs.llamaindex.ai/en/stable/examples/retrievers/relative_score_dist_fusion/

@@ -1,0 +1,42 @@
+Reciprocal Rank Fusion (RRF) Mode:
+Reciprocal Rank Fusion is the most robust fusion method in QueryFusionRetriever,
+designed to combine ranked lists from multiple query variations by using the reciprocal of ranks,
+which reduces the impact of outliers and provides stable fusion results.
+
+How it works within QueryFusionRetriever:
+Generates multiple query variations (e.g., "machine learning approaches", "ML techniques", "learning algorithms")
+Retrieves results for each query variation
+Calculates reciprocal rank score: 1 / (rank + k) where k is typically 60
+Sums reciprocal rank scores across all query variations for each document
+Re-ranks documents by combined RRF scores
+
+Mathematical formula:
+RRF_score(d) = Σ (1 / (rank_i(d) + k))
+Where:
+d is a document
+rank_i(d) is the rank of document d in query variation i's results
+k is a constant (typically 60) that controls the fusion behavior
+
+Why RRF works well for query fusion:
+Scale-invariant: Works regardless of individual query result score ranges
+Robust to outliers: Reciprocal function reduces impact of extreme rankings
+Query-agnostic: Doesn't depend on specific query formulations
+Proven effectiveness: Well-established in information retrieval research
+
+When to use RRF mode:
+Default choice for most query fusion scenarios
+When query variations might have very different result qualities
+When you want stable, predictable fusion behavior
+For production systems requiring consistent performance
+
+Advantages:
+Most stable fusion method across different query types
+No parameter tuning required beyond the standard k=60
+Handles varying numbers of results per query variation gracefully
+Computationally efficient
+
+Limitations:
+Loses absolute score information from individual queries
+Treats all query variations equally (no weighting)
+May not leverage score magnitude differences effectively
+Based on: https://docs.llamaindex.ai/en/stable/examples/retrievers/reciprocal_rerank_fusion/

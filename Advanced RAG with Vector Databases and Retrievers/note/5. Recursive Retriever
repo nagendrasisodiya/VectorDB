@@ -1,0 +1,40 @@
+Recursive Retriever - Multi-Level Reference Following
+The Recursive Retriever is designed to follow relationships between nodes using references.
+It can follow references from one node to another, such as citations in academic papers or other metadata links, allowing it to retrieve related content across documents or layers of abstraction.
+
+How it works (from authoritative source):
+Follows node references - traverses relationships to find referenced content
+Supports chunk and metadata linking - handles different types of references
+Multi-Level Navigation: Can execute sub-queries on referenced retrievers or query engines
+Network Building: Creates a network of interconnected retrievers that can reference each other
+
+Reference Types Supported:
+Chunk References: Smaller child chunks refer to larger parent chunks for additional context
+Metadata References: Summaries or generated questions refer to larger content chunks, such as citations in academic papers
+
+When to use (based on authoritative guidance):
+Academic papers with citations and extensive references
+Research papers where you need to retrieve relevant content from cited papers
+Documentation with cross-references and linked content
+Knowledge bases with interconnected information
+When nodes reference structured data (tables, databases, other documents)
+
+Configuration:
+retriever_dict: Maps node IDs or keys to specific retrievers
+query_engine_dict: Maps keys to query engines for sub-queries
+Node metadata can contain references to other nodes or data structures
+Key capability: Retrieves related content across documents by following reference chains
+
+Strengths:
+Follows complex relationships and enables multi-step reasoning
+Provides comprehensive coverage across related documents
+Excellent for handling interconnected information systems
+Can traverse multiple levels of references automatically
+
+Limitations:
+Requires careful setup of node relationships
+Can be computationally expensive for deep reference chains
+Complex debugging when reference chains are extensive
+May retrieve too much related content if not properly configured
+
+Based on: https://docs.llamaindex.ai/en/stable/examples/retrievers/recurisve_retriever_nodes_braintrust/

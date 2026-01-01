@@ -1,0 +1,43 @@
+Relative Score Fusion Mode
+Relative Score Fusion normalizes retrieval scores relative to the maximum score within each query variation's results,
+enabling effective combination when you want to preserve score magnitude information across different query formulations.
+
+How it works within QueryFusionRetriever:
+Generates multiple query variations using LLM
+Retrieves results for each query variation
+Normalizes each query's scores by dividing by the maximum score in that query's results
+Creates scores in the range [0, 1] where 1 is the best result from each query variation
+Combines normalized scores using weighted average or sum
+
+Mathematical approach:
+normalized_score_i(d) = score_i(d) / max_score_i
+combined_score(d) = Σ (weight_i × normalized_score_i(d))
+
+Why Relative Score Fusion is valuable for query variations:
+Preserves score magnitudes: Unlike RRF, retains information about how confident each query was about its results
+Fair combination: Ensures no single query variation dominates due to different scoring scales
+Interpretable results: Final scores reflect the relative strength across query variations
+Flexible weighting: Can weight certain query formulations more heavily if desired
+
+When to use Relative Score mode:
+When you trust the embedding model's confidence scores
+For queries where score magnitudes are meaningful
+When different query variations should contribute proportionally to their confidence
+In scenarios where you want to understand why certain results ranked highly
+
+Configuration within QueryFusionRetriever:
+Automatically handles score normalization across query variations
+Equal weighting of all query variations by default
+Preserves relative differences in retriever confidence
+
+Advantages:
+Preserves valuable score magnitude information
+Intuitive normalization approach
+Works well when retriever scores are reliable
+More interpretable than pure rank-based methods
+
+Limitations:
+Sensitive to outlier scores within individual query results
+Assumes retriever scores are meaningful and comparable
+May not handle unreliable scoring mechanisms well
+Based on: https://docs.llamaindex.ai/en/stable/examples/retrievers/relative_score_dist_fusion/

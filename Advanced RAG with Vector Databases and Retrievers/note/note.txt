@@ -35,3 +35,43 @@ Extracts keywords from documents and maps them to specific content chunks
 Enables exact keyword matching for rule-based or hybrid search scenarios
 Ideal for applications requiring precise term matching
 
+
+
+
+
+
+Recommended Retrievers by Use Case
+Based on the authoritative source and the characteristics of each retriever, here are recommended approaches for different scenarios:
+
+General Q&A Applications:
+Primary: Vector Index Retriever for semantic understanding
+Enhancement: Combine with BM25 Retriever using Query Fusion for hybrid approach
+Benefit: Combines semantic relevance with keyword matching
+From authoritative source: "For general Q&A, use a vector index retriever, potentially combined with a BM25 retriever.
+This retriever fusion combines semantic relevance with keyword matching."
+
+Technical Documentation:
+Primary: BM25 Retriever for exact term matching
+Enhancement: Vector Index Retriever as secondary for contextual flexibility
+Benefit: Prioritizes exact technical terms while maintaining semantic understanding
+From authoritative source: "For technical documents, especially those where exact terms need to be prioritized,
+consider making BM25 your primary retriever, with the vector index retriever adding contextual flexibility as a secondary retriever.
+
+Long Documents:
+Primary: Auto Merging Retriever
+Benefit: Retrieves longer parent versions only if enough shorter child versions are retrieved, preserving context
+From authoritative source: "For long documents, the auto merging retriever is a great option,
+because it will retrieve longer parent versions only if enough shorter child versions are retrieved.
+
+Research Papers:
+Primary: Recursive Retriever
+Benefit: Follows citations and references to retrieve relevant content from cited papers
+From authoritative source: "For research papers, use the recursive retriever in order to retrieve relevant content from cited papers."
+
+Large Document Collections:
+Primary: Document Summary Index Retriever for initial filtering
+Enhancement: Followed by Vector Index Retriever for detailed search within relevant documents
+Benefit: Narrows down relevant documents first, then performs detailed retrieval
+From authoritative source: "For large document sets, consider using the document summary index retriever to narrow down the number of relevant documents,
+followed by a vector search within the remaining subset to retrieve the most pertinent content.
+
